@@ -7,6 +7,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 
 /**
  * Domain class for reader
@@ -29,14 +30,12 @@ public class Reader implements Serializable {
     @OneToMany(mappedBy="currentReader", cascade = CascadeType.ALL)
     private Collection<Book> assignedBooks = new ArrayList<>();
 
-    public void addBook(Book book) {
-        if (!getAssignedBooks().contains(book)) {
-            getAssignedBooks().add(book);
-            if (book.getCurrentReader() != null) {
-                book.getCurrentReader().getAssignedBooks().remove(book);
-            }
-            book.setCurrentReader(this);
-        }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Reader reader = (Reader) o;
+        return readerId == reader.readerId;
     }
 
 }

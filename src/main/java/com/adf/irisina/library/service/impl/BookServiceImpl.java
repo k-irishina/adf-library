@@ -25,7 +25,9 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Book addBook(Book book) {
-        return repository.save(book);
+        Book stored = repository.save(book);
+        LOG.info("Stored new book: " + stored.toString());
+        return stored;
     }
 
     @Override
@@ -43,9 +45,12 @@ public class BookServiceImpl implements BookService {
         Optional<Book> optBook = getBook(bookId);
         if (optBook.filter(book -> book.getCurrentReader() == null).isPresent()) {
             repository.deleteById(bookId);
+            LOG.info("Deleted book with id " + bookId);
             return true;
-        } else
+        } else {
+            LOG.info("Did not delete book as it has reader attached to it.");
             return false;
+        }
     }
 
     @Override

@@ -15,10 +15,11 @@ import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/books")
+@CrossOrigin(origins = "http://localhost:4200")
 public class BookController {
 
     private static final Logger LOG = LogManager.getLogger(BookController.class);
-    private static final String BOOK_DELETE_ERROR = "Could not delete book. Reader is currently assigned to it.";
+    private static final String BOOK_DELETE_ERROR = "Could not delete book.";
 
 
     private static final String NO_BOOK_PRESENT = "No book with id %s is stored.";

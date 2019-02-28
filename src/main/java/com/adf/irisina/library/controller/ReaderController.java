@@ -13,6 +13,7 @@ import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/readers")
+@CrossOrigin(origins = "http://localhost:4200")
 public class ReaderController {
 
     private static final Logger LOG = LogManager.getLogger(ReaderController.class);

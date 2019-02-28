@@ -9,6 +9,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Collection;
 import java.util.NoSuchElementException;
 
@@ -16,8 +17,11 @@ import java.util.NoSuchElementException;
 @RequestMapping("/books")
 public class BookController {
 
-    public static final Logger LOG = LogManager.getLogger(BookController.class);
+    private static final Logger LOG = LogManager.getLogger(BookController.class);
+    private static final String BOOK_DELETE_ERROR = "Could not delete book. Reader is currently assigned to it.";
 
+
+    private static final String NO_BOOK_PRESENT = "No book with id %s is stored.";
     @Autowired
     private BookService bookService;
 
@@ -37,13 +41,18 @@ public class BookController {
     @GetMapping("/book/{bookId}")
     @ResponseBody
     public Book getBook(@PathVariable final long bookId) {
-        return bookService.getBook(bookId).orElseThrow(() -> new NoSuchElementException(String.format("No book with bookId %s was found", bookId)));
+        return bookService.getBook(bookId).orElseThrow(() -> new NoSuchElementException(String.format(NO_BOOK_PRESENT, bookId)));
     }
 
-    @PostMapping("/update/{bookId]")
+    @PostMapping("/update")
     @ResponseBody
-    public Book updateBook(@PathVariable final long bookId, @RequestBody Book book) {
-        return bookService.updateBook(bookId, book);
+    public Book updateBook(@RequestBody Book book) {
+        try {
+            return bookService.updateBook(book);
+        } catch (EntityNotFoundException ex) {
+            LOG.info(ex);
+            throw new NoSuchElementException(String.format(NO_BOOK_PRESENT, book.getBookId()));
+        }
     }
 
     @PostMapping("/assign/{bookId}/reader/{readerId}")
@@ -56,16 +65,14 @@ public class BookController {
     @DeleteMapping("/delete/{bookId}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public String deleteBook(@PathVariable final long bookId) {
+        boolean completed;
         try {
-            bookService.deleteBook(bookId);
-        } catch (IllegalArgumentException ex) {
-            LOG.warn("");
-            throw new NoSuchElementException(String.format("No book found with id %s", bookId));
-        } catch (EmptyResultDataAccessException ex ) {
+            completed = bookService.deleteBook(bookId);
+        } catch (IllegalArgumentException | EmptyResultDataAccessException ex) {
             LOG.warn(ex);
-            throw new NoSuchElementException(String.format("No book found with id %s", bookId));
+            throw new NoSuchElementException(String.format(NO_BOOK_PRESENT, bookId));
         }
-        return String.format("Successfully deleted book with id %s", bookId);
+        return completed ? String.format("Successfully deleted book with id %s", bookId) : BOOK_DELETE_ERROR;
     }
 
 }

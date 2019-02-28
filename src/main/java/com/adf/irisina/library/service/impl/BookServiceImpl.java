@@ -5,7 +5,6 @@ import com.adf.irisina.library.model.Reader;
 import com.adf.irisina.library.repo.BookRepo;
 import com.adf.irisina.library.repo.ReaderRepo;
 import com.adf.irisina.library.service.BookService;
-import com.sun.org.apache.regexp.internal.RE;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,7 @@ import java.util.*;
 @Service
 public class BookServiceImpl implements BookService {
 
-    public static final Logger LOG = LogManager.getLogger(BookService.class);
+    private static final Logger LOG = LogManager.getLogger(BookService.class);
 
     @Autowired
     private BookRepo repository;
@@ -35,13 +34,18 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Book updateBook(long bookId, Book book) {
+    public Book updateBook(Book book) {
         return repository.save(book);
     }
 
     @Override
-    public void deleteBook(long bookId) {
-        repository.deleteById(bookId);
+    public boolean deleteBook(long bookId) {
+        Optional<Book> optBook = getBook(bookId);
+        if (optBook.filter(book -> book.getCurrentReader() == null).isPresent()) {
+            repository.deleteById(bookId);
+            return true;
+        } else
+            return false;
     }
 
     @Override
@@ -61,7 +65,6 @@ public class BookServiceImpl implements BookService {
         toStore.setCurrentReader(reader.get());
 
         return repository.save(toStore);
-
     }
 
 }

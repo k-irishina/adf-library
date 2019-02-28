@@ -1,5 +1,6 @@
 package com.adf.irisina.library.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -12,11 +13,10 @@ import java.util.Collection;
  */
 @Data
 @Entity
-@Table(name = "READERS")
 public class Reader implements Serializable {
     private static final long serialVersionUID = -4688119817156509768L;
 
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "READER_ID")
     @Id
     private long readerId;
@@ -25,6 +25,7 @@ public class Reader implements Serializable {
     private String lastName;
     private String phoneNumber;
 
+    @JsonIgnoreProperties("currentReader")
     @OneToMany(mappedBy="currentReader", cascade = CascadeType.ALL)
     private Collection<Book> assignedBooks = new ArrayList<>();
 

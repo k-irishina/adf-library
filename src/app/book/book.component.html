@@ -1,0 +1,46 @@
+<div class="container-fluid">
+	<form [formGroup]="formGroup"
+		  (ngSubmit)="onSubmit()">
+		<div class="form-group">
+			<label for="bookId">Book ID</label>
+			<input type="text"
+				   formControlName="bookId"
+				   class="form-control"
+				   id="bookId"
+				   placeholder="Book ID">
+		</div>
+		<div class="form-group">
+			<label for="bookName">Book Name</label>
+			<input type="text"
+				   formControlName="bookName"
+				   class="form-control"
+				   id="bookName"
+				   placeholder="Book Name">
+		</div>
+		<div class="form-group">
+			<label for="isbn">ISBN</label>
+			<input type="text"
+				   formControlName="isbn"
+				   class="form-control"
+				   id="isbn"
+				   placeholder="ISBN">
+		</div>
+		<div class="form-group">
+			<label for="year">Year</label>
+			<input type="text"
+				   [ngClass]="{ 'is-invalid' : formGroup.get('year').invalid && formGroup.get('year').touched }"
+				   formControlName="year"
+				   class="form-control"
+				   id="year"
+				   maxlength="4"
+				   placeholder="Year">
+			<div class="invalid-feedback">Numbers only</div>
+		</div>
+
+		<button type="submit"
+				[disabled]="!formGroup.valid"
+				class="btn btn-primary">Submit</button>
+	</form>
+
+	<div class="alert alert-success" *ngIf="success">Data has been saved successfully </div>
+</div>

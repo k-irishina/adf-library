@@ -1,0 +1,33 @@
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+	<ng-container matColumnDef="bookId">
+		<th mat-header-cell *matHeaderCellDef> System Id </th>
+		<td mat-cell *matCellDef="let element"> {{element.bookId}} </td>
+	</ng-container>
+
+	<ng-container matColumnDef="bookName">
+		<th mat-header-cell *matHeaderCellDef> Book Name </th>
+		<td mat-cell *matCellDef="let element"> {{element.bookName}} </td>
+	</ng-container>
+
+	<ng-container matColumnDef="isbn">
+		<th mat-header-cell *matHeaderCellDef> ISBN </th>
+		<td mat-cell *matCellDef="let element"> {{element.isbn}} </td>
+	</ng-container>
+
+	<ng-container matColumnDef="year">
+		<th mat-header-cell *matHeaderCellDef> Year </th>
+		<td mat-cell *matCellDef="let element"> {{element.year}} </td>
+	</ng-container>
+
+	<ng-container matColumnDef="currentReader">
+		<th mat-header-cell *matHeaderCellDef> Assigned to: </th>
+		<td mat-cell *matCellDef="let element">
+			{{element.currentReader?.readerId}}
+			{{element.currentReader?.firstName}}
+			{{element.currentReader?.lastName}}</td>
+	</ng-container>
+
+	<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+	<tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>

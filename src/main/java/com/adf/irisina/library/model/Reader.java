@@ -1,7 +1,6 @@
 package com.adf.irisina.library.model;
 
 import lombok.Data;
-import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -13,20 +12,30 @@ import java.util.Collection;
  */
 @Data
 @Entity
+@Table(name = "READERS")
 public class Reader implements Serializable {
     private static final long serialVersionUID = -4688119817156509768L;
 
-    @TableGenerator(name = "READER_GEN")
-    @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid", strategy = "uuid2")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "READER_ID")
     @Id
-    private String readerId;
+    private long readerId;
 
     private String firstName;
     private String lastName;
     private String phoneNumber;
 
-    @OneToMany(mappedBy=".currentReader")
-    Collection<Book> assignedBooks = new ArrayList<>();
+    @OneToMany(mappedBy="currentReader", cascade = CascadeType.ALL)
+    private Collection<Book> assignedBooks = new ArrayList<>();
+
+    public void addBook(Book book) {
+        if (!getAssignedBooks().contains(book)) {
+            getAssignedBooks().add(book);
+            if (book.getCurrentReader() != null) {
+                book.getCurrentReader().getAssignedBooks().remove(book);
+            }
+            book.setCurrentReader(this);
+        }
+    }
 
 }

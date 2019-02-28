@@ -1,7 +1,6 @@
 package com.adf.irisina.library.model;
 
 import lombok.Data;
-import org.hibernate.annotations.GenericGenerator;
 
 import java.io.Serializable;
 
@@ -12,22 +11,23 @@ import javax.persistence.*;
  */
 @Data
 @Entity
+@Table(name = "BOOKS")
 public class Book implements Serializable {
 
     private static final long serialVersionUID = -2286256373638899976L;
 
-    @TableGenerator(name = "BOOKS")
-    @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid", strategy = "uuid2")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "BOOK_ID")
     @Id
-    private String bookId;
+    private long bookId;
 
-    private String book_name;
-    private String ISBN;
+    private String bookName;
+    private String isbn;
     private String year;
     private Boolean status;
 
     @ManyToOne
+    @JoinColumn(name = "READER_ID")
     private Reader currentReader;
 
 }

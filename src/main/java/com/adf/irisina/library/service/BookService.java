@@ -7,16 +7,16 @@ import java.util.Optional;
 
 public interface BookService {
 
-    public Book addBook(Book book);
+    Book addBook(Book book);
 
-    public Optional<Book> getBook(String bookId);
+    Optional<Book> getBook(long bookId);
 
-    public Book updateBook(String bookId, Book book);
+    Book updateBook(long bookId, Book book);
 
-    public void deleteBook(String bookId);
+    void deleteBook(long bookId);
 
-    public Collection<Book> getAllBooks();
+    Collection<Book> getAllBooks();
 
-    public Book setReader(String bookId, String readerId);
+    Book setReader(long bookId, long readerId);
 
 }
